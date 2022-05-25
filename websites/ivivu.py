@@ -16,6 +16,9 @@ def job_ivivu():
 #     mycol = mydb["tour3"]
     #this is the url of the very first page listing used Apple product we got earlier.
     url='https://www.ivivu.com'
+
+    web_name = 'Ivivu'
+
     site = 'https://www.ivivu.com/du-lich/tour-phu-quoc?'
     web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
 
@@ -55,10 +58,14 @@ def job_ivivu():
         tour_durations = []
         tour_start_days = []
         tour_ids = []
+        web_names = []
         
         for item in tour_items:
             tour_price = item.find('span' , attrs={"class":"tourItemPrice"})
             if (tour_price is not None):
+
+                web_names.append(web_name)
+
                 web_logos.append(url+soup.find('a', attrs={"class":"navbar-brand"}).find('img')['src'])
                 #convert to int 
 #                 tour_price = int(tour_price.get_text().replace('VND','').replace('.','').strip())
@@ -82,6 +89,7 @@ def job_ivivu():
 #                 insert = mycol.insert_one(tour)
               
         df = pd.DataFrame({"Tour_id": tour_ids, 
+                           "Web_name":web_names,
                            "Web_logo":web_logos, 
                            "Tour_name": tour_names,
                            "Tour_link": tour_links, 

@@ -8,6 +8,7 @@ def job_viettravel():
     #this is the url of the very first page listing used Apple product we got earlier.
     url='https://travel.com.vn'
     site = 'https://travel.com.vn/'
+    web_name ='Viettravel'
     web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
 
     web_page = urlopen(web_request).read()
@@ -50,6 +51,7 @@ def job_viettravel():
         print(pagination_links)
         print("\n")
         #assign
+        web_names = []
         tour_ids = [] 
         tour_imgs = []
         tour_links = []
@@ -83,6 +85,8 @@ def job_viettravel():
                 tour_duration = tour_infors[1].replace('N', ' ngày ').replace('Đ', ' đêm')
                 
                 tour_ids.append(tour_id)
+
+                web_names.append(web_name)
                 
                 tour_imgs.append(tour_img)
     
@@ -102,6 +106,7 @@ def job_viettravel():
 #                 index += 1
 #                 print(tour)
         df = pd.DataFrame({"Tour_id":tour_ids,
+                            "Web_name":web_names, 
                            "Web_logo":web_logos, 
                            "Tour_name": tour_names, 
                            "Tour_link": tour_links, 

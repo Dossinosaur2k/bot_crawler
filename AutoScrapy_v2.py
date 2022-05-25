@@ -43,27 +43,35 @@ def crawl():
 
     all_df = []
     check = True
-
+    fail_website = []
     try:
         
         all_df.append(ivivu.job_ivivu())
     except Exception as e:
         check = False
         print('Ivivu has exception : '+ str(e))
+        fail_website.append('Ivivu has exception : '+ str(e))
 
-    # try:
-    #     all_df.append(viettravel.job_viettravel())
-    # except Exception as e:
-    #     check = False
-    #     print('viettravel has exception : '+ str(e))
+    try:
+        all_df.append(viettravel.job_viettravel())
+    except Exception as e:
+        check = False
+        print('viettravel has exception : '+ str(e))
+        fail_website.append('viettravel has exception : '+ str(e))
 
 
-    # try:
-    #     all_df.append(vietnambooking.job_vietnambooking())
-    # except Exception as e:
-    #     check = False
-    #     print('vietnambooking has exception :' + str(e))
+    try:
+        all_df.append(vietnambooking.job_vietnambooking())
+    except Exception as e:
+        check = False
+        print('vietnambooking has exception :' + str(e))
+        fail_website.append('viettravel has exception : '+ str(e))
         
+    system_time = time.localtime(time.time())
+    day = system_time.tm_mday
+    month = system_time.tm_mon
+    year = system_time.tm_year
+    
     if check:
         
         client = pymongo.MongoClient(DB_URL)
@@ -103,20 +111,40 @@ def crawl():
         total_remove_record = len(remove_record_list)
         total_new_record_crawl = len(new_record_list)
 
-        system_time = time.localtime(time.time())
-        day = system_time.tm_mday
-        month = system_time.tm_mon
-        year = system_time.tm_year
+        
+        
+        
+        
+        mycol.drop()
+        mycol = db.TourUpdate.rename("Tour")
+
+
         print('time:'+str(day)+'-'+str(month)+'-'+str(year))
         print('total old record :'+str(total_old_record))
         print('total records crawled :'+str(total_record_crawl))
         print('total records removed:'+str(total_remove_record))
         print('total new records crawled:'+str(total_new_record_crawl))
-        mycol.drop()
-        mycol = db.TourUpdate.rename("Tour")
+
+        time_crawl = str(day)+'-'+str(month)+'-'+str(year)
+        crawl_log = {
+            "time":time_crawl,
+            "total_old_record":total_old_record,
+            "total_record_crawled":total_record_crawl,
+            "total_record_removed":total_remove_record,
+            "total_new_record_crawled":total_new_record_crawl,
+        }
+        
+        logcol = db.CrawlHistories
+
+        log = logcol.insert_one(crawl_log)
 
     else:
-        print('co loi')
+        client = pymongo.MongoClient(DB_URL)
+        db = client.Tour
+        logcol = db.Tour
+        time_crawl = str(day)+'-'+str(month)+'-'+str(year)
+        crawl_log = {"time":time_crawl,"fail":fail_website}
+        log = logcol.insert_one(crawl_log)
 
     
 # In[ ]:

@@ -7,6 +7,7 @@ import os.path
 def job_vietnambooking():
     url='https://www.vietnambooking.com'
     site = 'https://www.vietnambooking.com/du-lich'
+    web_name= 'vietnambooking'
     web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
 
     web_page = urlopen(web_request).read()
@@ -86,8 +87,10 @@ def job_vietnambooking():
                      Tour_prices.append(int(temp_tour_price))
     
             web_logos = []
+            web_names = []
             for i in range(len(Tour_names)):
                 web_logos.append(soup.find('div',attrs={"class":"header-box-logo"}).find('img')['src'])
+                web_names.append(web_name)
             
             tour_ids = []
             tour_durations = []
@@ -98,6 +101,7 @@ def job_vietnambooking():
                 tour_durations.append(tour_infors[1].get_text().strip())
             
             df = pd.DataFrame({'Tour_id':tour_ids,
+                                'Web_name':web_names,
                                 'Web_logo':web_logos,
                                'Tour_name':Tour_names, 
                                'Tour_link':Tour_links, 
