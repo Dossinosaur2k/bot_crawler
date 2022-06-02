@@ -4,11 +4,15 @@ import pandas as pd
 import numpy as np
 import os.path
 
+from unidecode import unidecode
+
+web_name ='Viettravel'
+
 def job_viettravel():
     #this is the url of the very first page listing used Apple product we got earlier.
     url='https://travel.com.vn'
     site = 'https://travel.com.vn/'
-    web_name ='Viettravel'
+    
     web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
 
     web_page = urlopen(web_request).read()
@@ -56,6 +60,7 @@ def job_viettravel():
         tour_imgs = []
         tour_links = []
         tour_names = []
+        tour_names_no_vietnamese = []
         tour_prices = []
         web_logos = []
         tour_durations = []
@@ -93,6 +98,8 @@ def job_viettravel():
                 tour_links.append(url+tour_link)
         
                 tour_names.append(tour_name)
+
+                tour_names_no_vietnamese.append(unidecode(tour_name))
             
                 tour_prices.append(tour_price)
                 
@@ -109,6 +116,7 @@ def job_viettravel():
                             "Web_name":web_names, 
                            "Web_logo":web_logos, 
                            "Tour_name": tour_names, 
+                           "Tour_name_no_vietnamese":tour_names_no_vietnamese,
                            "Tour_link": tour_links, 
                            "Tour_img": tour_imgs, 
                            "Tour_duration":tour_durations,
@@ -119,3 +127,7 @@ def job_viettravel():
         # print(df)
     df= pd.concat(dfs, ignore_index = True)
     return df
+
+    
+def getWebName():
+    return web_name

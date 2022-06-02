@@ -5,6 +5,10 @@ import pandas as pd
 import numpy as np
 import os.path
 
+from unidecode import unidecode
+
+web_name = 'Ivivu'
+
 def job_ivivu():
 #     mycol.drop()
 #     mycol = db.tourUpdate
@@ -17,7 +21,7 @@ def job_ivivu():
     #this is the url of the very first page listing used Apple product we got earlier.
     url='https://www.ivivu.com'
 
-    web_name = 'Ivivu'
+    
 
     site = 'https://www.ivivu.com/du-lich/tour-phu-quoc?'
     web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
@@ -53,6 +57,7 @@ def job_ivivu():
         tour_imgs = []
         tour_links = []
         tour_names = []
+        tour_names_no_vietnamese = []
         tour_prices = []
         web_logos = []
         tour_durations = []
@@ -75,6 +80,8 @@ def job_ivivu():
                 tour_links.append(url+item.find('a' , attrs={"class":"linkDetail"})['href'])
         
                 tour_names.append(item.find('span' , attrs={"class":"tourItemName"}).get_text().strip())
+
+                tour_names_no_vietnamese.append(unidecode(item.find('span' , attrs={"class":"tourItemName"}).get_text().strip()))
             
                 tour_prices.append(int(tour_price.get_text().replace("VND", "").replace('.','').strip()))
                 
@@ -92,6 +99,7 @@ def job_ivivu():
                            "Web_name":web_names,
                            "Web_logo":web_logos, 
                            "Tour_name": tour_names,
+                           "Tour_name_no_vietnamese":tour_names_no_vietnamese,
                            "Tour_link": tour_links, 
                            "Tour_img": tour_imgs,
                            "Tour_duration":tour_durations,
@@ -104,6 +112,7 @@ def job_ivivu():
     df = pd.concat(dfs, ignore_index=True)
     # df.drop_duplicates(subset=["Tour_id","Tour_name"],keep=False, inplace=True,ignore_index=True)
     return df
-
+def getWebName():
+    return web_name
 
     

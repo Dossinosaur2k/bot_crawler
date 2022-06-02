@@ -4,31 +4,35 @@ import pandas as pd
 import numpy as np
 import os.path
 
+from unidecode import unidecode
+
+web_name= 'vietnambooking'
+
 def job_vietnambooking():
     url='https://www.vietnambooking.com'
     site = 'https://www.vietnambooking.com/du-lich'
-    web_name= 'vietnambooking'
-    web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
-
-    web_page = urlopen(web_request).read()
-    soup = BeautifulSoup(web_page, 'html.parser')
     
+    web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
+    web_page = urlopen(web_request,timeout=45).read()
+    soup = BeautifulSoup(web_page, 'html.parser')
+
     page_links = []
     div_page_links = soup.find('div', attrs={"class":"category-tour-box-type-country-inner"}).find_all('div', attrs={"class":"box-link-title"})
     for div_link in div_page_links:
         link = div_link.find('a')
         page_links.append(link['href'])
-#     print(page_links)
     
+    page_links.pop(0)
     
+    print(page_links)
     
     
     all_df = []
     for site in page_links:
         
-         
+
         web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
-        web_page = urlopen(web_request).read()
+        web_page = urlopen(web_request,timeout=45).read()
         soup = BeautifulSoup(web_page, 'html.parser')
         
          #crawling for the links in pagniation
@@ -52,10 +56,11 @@ def job_vietnambooking():
                     if(i.get_text().strip() == str(a+1)):
                         pagination_links.append(url + i['href'])
                 a+=1
-#         print(pagination_links)
+        print(pagination_links)
 #         print("\n")
         list_df = []
         for page in pagination_links:
+
             web_request = Request(page, headers={'User-Agent':'Mozilla/5.0'})
             web_page = urlopen(web_request).read()
             soup = BeautifulSoup(web_page, 'html.parser')
@@ -69,11 +74,13 @@ def job_vietnambooking():
                 Imgs.append(tour_img.find('img')['src'])
 
             Tour_names = []
+            Tour_names_no_vietnamese = []
             Tour_links = []
             tour_names = div_tours.find_all('div', attrs={"class":"box-title-content"})
             for tour_name in tour_names:
                 div_name = tour_name.find('a')
                 Tour_names.append(div_name.get_text().strip())
+                Tour_names_no_vietnamese.append(unidecode(div_name.get_text().strip()))
                 Tour_links.append(div_name['href'])
 
 
@@ -104,6 +111,7 @@ def job_vietnambooking():
                                 'Web_name':web_names,
                                 'Web_logo':web_logos,
                                'Tour_name':Tour_names, 
+                                'Tour_name_no_vietnamese':Tour_names_no_vietnamese,
                                'Tour_link':Tour_links, 
                                'Tour_img':Imgs,
                                'Tour_duration':tour_durations, 
@@ -115,3 +123,8 @@ def job_vietnambooking():
         # print(df)
     df = pd.concat(all_df, ignore_index=True)
     return(df)
+
+def getWebName():
+    return web_name
+
+
