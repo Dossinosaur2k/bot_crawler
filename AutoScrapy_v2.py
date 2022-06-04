@@ -74,11 +74,13 @@ def crawl():
         error_website.append(vietnambooking.getWebName())
         print('vietnambooking has exception :' + str(e))
         fail_website.append(vietnambooking.getWebName()+' has exception : '+ str(e))
-    system_time = time.localtime(time.time())
-    day = system_time.tm_mday
-    month = system_time.tm_mon
-    year = system_time.tm_year
+    # system_time = time.localtime(time.time())
+    # day = system_time.tm_mday
+    # month = system_time.tm_mon
+    # year = system_time.tm_year
     
+    system_time = time.localtime()
+
     if check:
         
         client = pymongo.MongoClient(DB_URL)
@@ -126,15 +128,20 @@ def crawl():
         mycol = db.TourUpdate.rename("Tour")
 
         # insert log
-        print('time:'+str(day)+'-'+str(month)+'-'+str(year))
+
+        
+        time_crawl_format = time.strftime("%d/%m/%Y, %H:%M:%S", system_time)
+        time_crawl = datetime.datetime.strptime(time_crawl_format,'%d/%m/%Y, %H:%M:%S')
+        print(time_crawl_format)
         print('total old record :'+str(total_old_record))
         print('total records crawled :'+str(total_record_crawl))
         print('total records removed:'+str(total_remove_record))
         print('total new records crawled:'+str(total_new_record_crawl))
 
-        time_crawl = str(day)+'-'+str(month)+'-'+str(year)
+        
         crawl_log = {
             "time":time_crawl,
+            "time_format":time_crawl_format,
             "total_old_record":total_old_record,
             "total_record_crawled":total_record_crawl,
             "total_record_removed":total_remove_record,
@@ -225,15 +232,19 @@ def crawl():
 
 
             # insert log
-            print('time:'+str(day)+'-'+str(month)+'-'+str(year))
+
+            time_crawl_format = time.strftime("%d/%m/%Y, %H:%M:%S", system_time)
+            time_crawl = datetime.datetime.strptime(time_crawl_format,'%d/%m/%Y, %H:%M:%S')
+            print(time_crawl)
             print('total old record :'+str(total_old_record))
             print('total records crawled :'+str(total_record_crawl))
             print('total records removed:'+str(total_remove_record))
             print('total new records crawled:'+str(total_new_record_crawl))
 
-            time_crawl = str(day)+'-'+str(month)+'-'+str(year)
+
             crawl_log = {
                 "time":time_crawl,
+                "time_format":time_crawl_format,
                 "total_old_record":total_old_record,
                 "total_record_crawled":total_record_crawl,
                 "total_record_removed":total_remove_record,
@@ -246,8 +257,9 @@ def crawl():
            
             
         else:
-            time_crawl = str(day)+'-'+str(month)+'-'+str(year)
-            crawl_log = {"time":time_crawl,"fail":fail_website}
+            time_crawl_format = time.strftime("%d/%m/%Y, %H:%M:%S", system_time)
+            time_crawl = datetime.datetime.strptime(time_crawl_format,'%d/%m/%Y, %H:%M:%S')
+            crawl_log = {"time":time_crawl,"time_format":time_crawl_format,"fail":fail_website}
             log = logcol.insert_one(crawl_log)
         
 
