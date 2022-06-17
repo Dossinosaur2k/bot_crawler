@@ -50,6 +50,7 @@ def job_ivivu():
     all_df = []
     dfs=[]
     for page in page_links:
+        print(page)
         try:
             web_request = Request(page, headers={'User-Agent':'Mozilla/5.0'})
 

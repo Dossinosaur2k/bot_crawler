@@ -32,6 +32,7 @@ def job_viettravel():
     dfs = []
     for site in page_links:   
 
+        print(site)
         
         web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
         web_page = urlopen(web_request).read()

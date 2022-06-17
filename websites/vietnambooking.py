@@ -30,7 +30,7 @@ def job_vietnambooking():
     all_df = []
     for site in page_links:
         
-
+        print(site)
         web_request = Request(site, headers={'User-Agent':'Mozilla/5.0'})
         web_page = urlopen(web_request,timeout=45).read()
         soup = BeautifulSoup(web_page, 'html.parser')
