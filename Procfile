@@ -1,0 +1,1 @@
+worker: python AutoScrapy_v2.py
