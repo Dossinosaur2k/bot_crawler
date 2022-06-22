@@ -265,10 +265,10 @@ def crawl():
 
     
 # In[ ]:
-crawl()
+# crawl()
 # #schedule your job
-# # schedule.every(5).minutes.do(crawl)
-# schedule.every().day.at("23:59").do(crawl)
+schedule.every(5).minutes.do(crawl)
+schedule.every().day.at("23:59").do(crawl)
 
 # while True:
 #     schedule.run_pending()
