@@ -272,7 +272,9 @@ schedule.every().day.at("23:59").do(crawl)
 
 while True:
     schedule.run_pending()
+    print('...')
     time.sleep(1) 
+
 
 
 
