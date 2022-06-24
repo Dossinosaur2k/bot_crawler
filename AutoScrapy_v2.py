@@ -270,9 +270,9 @@ def crawl():
 # schedule.every(5).minutes.do(crawl)
 schedule.every().day.at("23:59").do(crawl)
 
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1) 
+while True:
+    schedule.run_pending()
+    time.sleep(1) 
 
 
 
